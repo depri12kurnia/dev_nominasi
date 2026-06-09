@@ -82,7 +82,7 @@
                 <!-- End Header & Export Action -->
 
                 <div class="table-responsive">
-                    <table id="nominasi_table" class="table table-bordered table-striped">
+                    <table id="nominasi_table" class="table table-bordered table-striped small">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -198,11 +198,8 @@
                                 text: 'Status telah disimpan.',
                                 timer: 1500
                             });
-
-                            table.ajax.reload(function() {
-                                // Kode ini baru dijalankan setelah tabel benar-benar selesai di-reload
-                                updateData();
-                            }, false);
+                            table.ajax.reload(null, false);
+                            $('#filter_prodi').trigger('change');
                         }
                     }
                 });
@@ -218,7 +215,6 @@
                 "responsive": false,
                 "autoWidth": false,
                 "pageLength": 10,
-                "deferLoading": 0,
                 "order": [
                     [6, "DESC"]
                 ],
@@ -249,10 +245,23 @@
         }
         // Action Tombol FILTER
         $('#btn_filter').click(function() {
-            updateData();
+            table.ajax.reload(); // Reload tabel beserta parameter filter baru
         });
 
-        window.updateData = function() {
+        // Action Tombol RESET FILTER
+        $('#btn_reset').click(function() {
+            $('#filter_prodi').val('');
+            $('#filter_pilihan').val('');
+            $('#filter_kelas').val('');
+            table.ajax.reload();
+        });
+
+        // Refresh button
+        $('#btn_refresh').click(function() {
+            table.ajax.reload(null, false);
+        });
+
+        $('#filter_prodi, #filter_kelas').on('change', function() {
             var prodi = $('#filter_prodi').val();
             var kelas = $('#filter_kelas').val();
 
@@ -285,49 +294,14 @@
                             $('#lbl_terisi_utama').parent().removeClass('badge-danger').addClass('badge-success');
                         }
 
-                        if (parseInt(res.kuota_cadangan) >= parseInt(res.kuota_cadangan) && parseInt(res.kuota_cadangan) > 0) {
-                            $('#lbl_terisi_cadangan').parent().removeClass('badge-warning').addClass('badge-danger');
-                        } else {
-                            $('#lbl_terisi_cadangan').parent().removeClass('badge-danger').addClass('badge-warning');
-                        }
                         // Tampilkan panel
                         $('#panel_kuota').slideDown();
                     }
                 });
-                table.ajax.reload();
             } else {
-                alert("Pilih Prodi terlebih dahulu!");
+                $('#panel_kuota').slideUp();
             }
-        }
-
-        // Action Tombol RESET FILTER
-        $('#btn_reset').click(function() {
-            // 1. Reset dropdown
-            $('#filter_prodi').val('').trigger('change');
-            $('#filter_kelas').val('').trigger('change');
-            $('#filter_pilihan').val('').trigger('change');
-
-            // 2. Reset teks ke 0 / 0
-            $('#nama_prodi_kuota').text('Nama Prodi');
-            $('#kelas').text('Kelas');
-            $('#lbl_kuota_utama').text('0');
-            $('#lbl_kuota_cadangan').text('0');
-            $('#lbl_terisi_utama').text('0');
-            $('#lbl_terisi_cadangan').text('0');
-
-            // 3. Reset warna badge ke default (success/warning)
-            $('#lbl_terisi_utama').parent().removeClass('badge-danger').addClass('badge-success');
-            $('#lbl_terisi_cadangan').parent().removeClass('badge-danger').addClass('badge-warning');
-
-            // 4. Bersihkan tabel
-            table.ajax.reload(null, false);
         });
-
-        // Refresh button
-        $('#btn_refresh').click(function() {
-            table.ajax.reload(null, false);
-        });
-
 
         // Export Excel dengan membawa Parameter Filter
         $(document).on('click', '#btn_export_excel', function() {
@@ -357,10 +331,53 @@
             var kelas = $('#filter_kelas').val();
 
             // Build URL dengan parameter GET
-            var url = "<?= site_url('admin/nominasi/export_excel_cadangan') ?>?prodi=" + encodeURIComponent(prodi) + "&pilihan=" + encodeURIComponent(pilihan) + "&kelas=" + encodeURIComponent(kelas);
+            var url = "<?= site_url('admin/nominasi/export_excel_utama_cadangan') ?>?prodi=" + encodeURIComponent(prodi) + "&pilihan=" + encodeURIComponent(pilihan) + "&kelas=" + encodeURIComponent(kelas);
             window.open(url, '_blank');
         });
 
+        // Action Simpan Keputusan
+        $('#btnSave').on('click', function() {
+            var id = $('[name="id"]').val();
+            var status = $('input[name="status_kelulusan"]:checked').val();
+
+            if (typeof status === "undefined") {
+                alert('Silakan pilih status kelulusan terlebih dahulu.');
+                return;
+            }
+
+            if (confirm('Apakah Anda yakin ingin menyimpan status ini?')) {
+                var postData = {
+                    id: id,
+                    status: status
+                };
+                postData[csrfName] = getCsrfToken();
+
+                $.ajax({
+                    url: "<?= site_url('admin/nominasi/ajax_update_status'); ?>", // Sesuaikan jika pakai prefix 'admin/'
+                    type: "POST",
+                    data: postData,
+                    headers: {
+                        'X-CSRF-TOKEN': getCsrfToken()
+                    },
+                    dataType: "json",
+                    success: function(res) {
+                        if (!res.status) {
+                            alert('Error: ' + (res.message || 'Gagal mengupdate data'));
+                            return;
+                        }
+                        if (res.csrf_token) {
+                            $('#csrf_token').val(res.csrf_token);
+                        }
+                        $('#modal_detail').modal('hide');
+                        table.ajax.reload(null, false); // Reload tabel
+                        $('#filter_prodi').trigger('change');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('AJAX error: ' + textStatus);
+                    }
+                });
+            }
+        });
         // Trigger untuk memunculkan Modal Import Excel
         $('#btn_import_excel').click(function() {
             // Reset form setiap kali modal dibuka agar bersih dari sisa file sebelumnya
@@ -399,19 +416,8 @@
                     },
                     success: function(res) {
                         Swal.fire('Berhasil!', 'Status telah direset.', 'success');
-
-                        // Pastikan table.ajax.reload dipanggil dengan benar
-                        table.ajax.reload(function() {
-                            console.log("Tabel reload selesai, memanggil updateData...");
-                            if (typeof window.updateData === 'function') {
-                                window.updateData();
-                            } else {
-                                console.error("Fungsi updateData tidak ditemukan!");
-                            }
-                        }, false);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Gagal melakukan reset:", error);
+                        table.ajax.reload(null, false);
+                        $('#filter_prodi').trigger('change');
                     }
                 });
             }

@@ -12,6 +12,7 @@
                         <tr>
                             <th>#</th>
                             <th>Nama Prodi</th>
+                            <th>Kelas</th>
                             <th>Kuota Utama</th>
                             <th>Persentase Cadangan</th>
                             <th>Kuota Cadangan</th>
@@ -25,6 +26,7 @@
                         <tr>
                             <th>#</th>
                             <th>Nama Prodi</th>
+                            <th>Kelas</th>
                             <th>Kuota Utama</th>
                             <th>Persentase Cadangan</th>
                             <th>Kuota Cadangan</th>
@@ -62,14 +64,24 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Kuota Utama</label>
+                            <label class="control-label col-md-3">Kelas</label>
+                            <div class="col-md-12">
+                                <select name="kelas" class="form-control form-control-sm">
+                                    <option value="">Pilih Kelas</option>
+                                    <option value="Reguler"> Reguler</option>
+                                    <option value="Internasional"> Internasional</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Kuota Utama</label>
                             <div class="col-md-12">
                                 <input name="kuota_utama" placeholder="Kuota Utama" class="form-control" type="number">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Persentase Cadangan</label>
+                            <label class="control-label col-md-12">Persentase Cadangan</label>
                             <div class="col-md-12">
                                 <input name="persentase_cad" placeholder="Persentase Cadangan" class="form-control" type="number">
                                 <span class="help-block"></span>
@@ -157,6 +169,7 @@
             success: function(data) {
                 $('[name="id"]').val(data.id);
                 $('[name="nama_prodi"]').val(data.nama_prodi);
+                $('[name="kelas"]').val(data.kelas);
                 $('[name="kuota_utama"]').val(data.kuota_utama);
                 $('[name="persentase_cad"]').val(data.persentase_cad);
                 $('[name="kuota_cadangan"]').val(data.kuota_cadangan);

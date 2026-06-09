@@ -80,9 +80,9 @@
                       <li class="nav-header">Master Data</li>
                       <li class="nav-item">
                           <a href="<?php echo base_url('admin/nominasi'); ?>" class="nav-link <?= ($this->uri->segment(1) == 'admin') && $this->uri->segment(2) == 'nominasi' ? 'active' : ''; ?>">
-                              <i class="nav-icon fas fa-ticket-alt"></i>
+                              <i class="nav-icon fas fa-trophy"></i>
                               <p>
-                                  Nominasi
+                                  Data Nominasi
                               </p>
                           </a>
                       </li>

@@ -311,17 +311,16 @@ class Nominasi extends CI_Controller
     public function export_excel_utama()
     {
 
-        $prodi = $this->input->get('prodi');
-        $kelas = $this->input->get('kelas');
+        $prodi   = $this->input->get('prodi');
+        $pilihan = $this->input->get('pilihan');
+        $kelas   = $this->input->get('kelas');
 
         $this->db->from('nominasi_camaba');
 
-        // Terapkan filter berdasarkan Prodi dan Kelas Diterima
-        $this->M_nominasi->_apply_filter_excel($prodi, $kelas);
-
-        // Tambahkan kondisi 'Utama' sesuai kebutuhan Anda
         $this->db->where('jenis_kelulusan', 'Utama');
         $this->db->order_by('skor', 'DESC');
+
+        $this->M_nominasi->_apply_filter($prodi, $pilihan, $kelas);
 
         $nominasi_data = $this->db->get()->result();
 
@@ -372,17 +371,16 @@ class Nominasi extends CI_Controller
     public function export_excel_cadangan()
     {
 
-        $prodi = $this->input->get('prodi');
-        $kelas = $this->input->get('kelas');
+        $prodi   = $this->input->get('prodi');
+        $pilihan = $this->input->get('pilihan');
+        $kelas   = $this->input->get('kelas');
 
         $this->db->from('nominasi_camaba');
 
-        // Terapkan filter berdasarkan Prodi dan Kelas Diterima
-        $this->M_nominasi->_apply_filter_excel($prodi, $kelas);
-
-        // Tambahkan kondisi 'Utama' sesuai kebutuhan Anda
         $this->db->where('jenis_kelulusan', 'Cadangan');
         $this->db->order_by('skor', 'DESC');
+
+        $this->M_nominasi->_apply_filter($prodi, $pilihan, $kelas);
 
         $nominasi_data = $this->db->get()->result();
 
@@ -392,7 +390,7 @@ class Nominasi extends CI_Controller
         $sheet = $spreadsheet->getActiveSheet();
 
 
-        $headers = ['ID', 'No. Ujian', 'Nama', 'No. Pendaftaran', 'Asal Sekolah', 'Jurusan Sekolah', 'Pilihan 1', 'Kelas Pilihan 1', 'Pilihan 2', 'Kelas Pilihan 2', 'Skor', 'Prodi Diterima', 'Kelas Diterima', 'Jenis Kelulusan', 'Diunggah Pada'];
+        $headers = ['ID', 'No. Ujian', 'Nama', 'No. Pendaftaran', 'Asal Sekolah', 'Jurusan Sekolah', 'Pilihan 1', 'Kelas Pilihan 1', 'Pilihan 2', 'Kelas Pilihan 2', 'Skor', 'Prodi Diterima', 'Jenis Kelulusan', 'Diunggah Pada'];
 
         $column = 'A';
         foreach ($headers as $h) {
@@ -407,7 +405,7 @@ class Nominasi extends CI_Controller
             $sheet->setCellValue('A' . $row, $no++);
             $sheet->setCellValue('B' . $row, $v->nomor_ujian);
             $sheet->setCellValue('C' . $row, $v->nama);
-            $sheet->setCellValue('D' . $row, "'" . $v->nomor_pendaftaran);
+            $sheet->setCellValue('D' . $row, $v->nomor_pendaftaran);
             $sheet->setCellValue('E' . $row, $v->asal_sekolah);
             $sheet->setCellValue('F' . $row, $v->jurusan_sekolah);
             $sheet->setCellValue('G' . $row, $v->pilihan_1);
@@ -416,9 +414,8 @@ class Nominasi extends CI_Controller
             $sheet->setCellValue('J' . $row, $v->kelas_pilihan_2);
             $sheet->setCellValue('K' . $row, $v->skor);
             $sheet->setCellValue('L' . $row, $v->prodi_diterima);
-            $sheet->setCellValue('M' . $row, $v->kelas_diterima);
-            $sheet->setCellValue('N' . $row, $v->jenis_kelulusan);
-            $sheet->setCellValue('O' . $row, $v->diunggah_pada);
+            $sheet->setCellValue('M' . $row, $v->jenis_kelulusan);
+            $sheet->setCellValue('N' . $row, $v->diunggah_pada);
             $row++;
         }
 

@@ -2,8 +2,8 @@
 class M_kuota extends CI_Model
 {
     var $table = 'kuota_prodi';
-    var $column_order = array('id', 'nama_prodi', 'kuota_utama', 'persentase_cad', 'kuota_cadangan');
-    var $column_search = array('id', 'nama_prodi', 'kuota_utama', 'persentase_cad', 'kuota_cadangan');
+    var $column_order = array('id', 'nama_prodi', 'kelas', 'kuota_utama', 'persentase_cad', 'kuota_cadangan');
+    var $column_search = array('id', 'nama_prodi', 'kelas', 'kuota_utama', 'persentase_cad', 'kuota_cadangan');
     var $order = array('id' => 'asc');
 
     private function _get_datatables_query()
@@ -63,7 +63,7 @@ class M_kuota extends CI_Model
     public function get_by_id($id)
     {
         // PERBAIKAN: Memilih kolom yang benar sesuai struktur tabel kuota_prodi
-        $this->db->select('id, nama_prodi, kuota_utama, persentase_cad, kuota_cadangan');
+        $this->db->select('id, nama_prodi, kelas, kuota_utama, persentase_cad, kuota_cadangan');
         $this->db->from($this->table);
         $this->db->where('id', $id);
         $query = $this->db->get();

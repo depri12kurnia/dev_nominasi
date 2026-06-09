@@ -5,8 +5,9 @@ class M_nominasi extends CI_Model
 {
 
     var $table = 'nominasi_camaba';
-    var $column_order = array(null, 'nomor_ujian', 'nama', 'prodi_diterima', 'nomor_pendaftaran', 'asal_sekolah', 'pilihan_1', 'pilihan_2', 'skor', 'status_kelulusan', 'diunggah_pada', null);
-    var $column_search = array('nomor_ujian', 'nama', 'prodi_diterima', 'nomor_pendaftaran', 'asal_sekolah', 'pilihan_1', 'pilihan_2', 'skor', 'status_kelulusan', 'diunggah_pada');
+    // Sesuaikan variabel di Model/Controller agar match dengan array di atas:
+    var $column_order = array(null, 'nomor_ujian', 'nama', 'nomor_pendaftaran', 'asal_sekolah', 'jurusan_sekolah', 'skor', 'status', null);
+    var $column_search = array('nomor_ujian', 'nama', 'nomor_pendaftaran', 'asal_sekolah', 'jurusan_sekolah', 'skor', 'status');
     var $order = array('skor' => 'DESC');
 
     public function __construct()
@@ -122,28 +123,23 @@ class M_nominasi extends CI_Model
         }
         // KONDISI 3: Semua Pilihan (Kosong)
         else {
-            if (!empty($prodi) && !empty($kelas)) {
-                $this->db->group_start();
-                $this->db->group_start();
-                $this->db->where('pilihan_1', $prodi);
-                $this->db->where('kelas_pilihan_1', $kelas);
-                $this->db->group_end();
-                $this->db->or_group_start();
-                $this->db->where('pilihan_2', $prodi);
-                $this->db->where('kelas_pilihan_2', $kelas);
-                $this->db->group_end();
-                $this->db->group_end();
-            } else if (!empty($prodi)) {
-                $this->db->group_start();
-                $this->db->where('pilihan_1', $prodi);
-                $this->db->or_where('pilihan_2', $prodi);
-                $this->db->group_end();
-            } else if (!empty($kelas)) {
-                $this->db->group_start();
-                $this->db->where('kelas_pilihan_1', $kelas);
-                $this->db->or_where('kelas_pilihan_2', $kelas);
-                $this->db->group_end();
-            }
+            // 
+        }
+    }
+
+    public function _apply_filter_excel($prodi, $kelas)
+    {
+        // Bersihkan parameter
+        $prodi = trim($prodi);
+        $kelas = trim($kelas);
+
+        // KONDISI: Jika prodi dan kelas DITERIMA ada, terapkan filter sesuai contoh Anda
+        if (!empty($prodi)) {
+            $this->db->where('prodi_diterima', $prodi);
+        }
+
+        if (!empty($kelas)) {
+            $this->db->where('kelas_diterima', $kelas);
         }
     }
 }

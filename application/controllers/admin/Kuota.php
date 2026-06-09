@@ -48,6 +48,7 @@ class Kuota extends CI_Controller
             $row = array();
             $row[] = $k->id;
             $row[] = $k->nama_prodi;
+            $row[] = $k->kelas;
             $row[] = $k->kuota_utama;
             $row[] = $k->persentase_cad . '%'; // Menampilkan persentase cadangan di tabel
             $row[] = $k->kuota_cadangan;
@@ -83,6 +84,7 @@ class Kuota extends CI_Controller
 
         $data = array(
             'nama_prodi'     => $this->input->post('nama_prodi'),
+            'kelas'          => $this->input->post('kelas'),
             'kuota_utama'    => $kuota_utama,
             'persentase_cad' => $persentase_cad,
             'kuota_cadangan' => round(($persentase_cad / 100) * $kuota_utama)
@@ -112,6 +114,7 @@ class Kuota extends CI_Controller
 
         $data = array(
             'nama_prodi'     => $this->input->post('nama_prodi'),
+            'kelas'          => $this->input->post('kelas'),
             'kuota_utama'    => $kuota_utama,
             'persentase_cad' => $persentase_cad,
             'kuota_cadangan' => round(($persentase_cad / 100) * $kuota_utama)
@@ -155,12 +158,19 @@ class Kuota extends CI_Controller
         $data['status'] = TRUE;
 
         $nama_prodi     = $this->input->post('nama_prodi');
+        $kelas     = $this->input->post('kelas');
         $kuota_utama    = $this->input->post('kuota_utama');
         $persentase_cad = $this->input->post('persentase_cad');
 
         if (empty($nama_prodi)) {
             $data['inputerror'][] = 'nama_prodi';
             $data['error_string'][] = 'Nama prodi wajib diisi';
+            $data['status'] = FALSE;
+        }
+
+        if (empty($kelas)) {
+            $data['inputerror'][] = 'kelas';
+            $data['error_string'][] = 'Kelas wajib dipilih';
             $data['status'] = FALSE;
         }
 
