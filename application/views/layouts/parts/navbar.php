@@ -77,7 +77,7 @@
                               </p>
                           </a>
                       </li>
-                      <li class="nav-header">Master Data</li>
+                      <li class="nav-header">Master Nominasi</li>
                       <li class="nav-item">
                           <a href="<?php echo base_url('admin/nominasi'); ?>" class="nav-link <?= ($this->uri->segment(1) == 'admin') && $this->uri->segment(2) == 'nominasi' ? 'active' : ''; ?>">
                               <i class="nav-icon fas fa-trophy"></i>
@@ -86,8 +86,7 @@
                               </p>
                           </a>
                       </li>
-
-                      <li class="nav-header">Administrator</li>
+                      <li class="nav-header">Master Data</li>
                       <li class="nav-item">
                           <a href="<?php echo base_url('admin/kuota'); ?>" class="nav-link <?= ($this->uri->segment(1) == 'admin') && $this->uri->segment(2) == 'kuota' ? 'active' : ''; ?>">
                               <i class="nav-icon fas fa-list"></i>
@@ -96,6 +95,17 @@
                               </p>
                           </a>
                       </li>
+                      <li class="nav-item">
+                          <a href="<?php echo base_url('admin/laporan'); ?>" class="nav-link <?= ($this->uri->segment(1) == 'admin') && $this->uri->segment(2) == 'laporan' ? 'active' : ''; ?>">
+                              <i class="nav-icon fas fa-file"></i>
+                              <p>
+                                  Laporan
+                              </p>
+                          </a>
+                      </li>
+
+                      <li class="nav-header">Administrator</li>
+
                       <li class="nav-item">
                           <a href="<?php echo base_url('admin/users'); ?>" class="nav-link <?= ($this->uri->segment(1) == 'admin') && $this->uri->segment(2) == 'users' ? 'active' : ''; ?>">
                               <i class="nav-icon fas fa-user"></i>

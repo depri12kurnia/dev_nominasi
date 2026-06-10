@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Nominasi extends CI_Controller
+class Laporan extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
         $this->load->model('M_settings');
-        $this->load->model('M_nominasi');
+        $this->load->model('M_laporan');
         $this->load->model('M_log_user');
         $this->load->model('M_users');
 
@@ -21,21 +21,20 @@ class Nominasi extends CI_Controller
     {
         $data['website'] = $this->M_settings->get_all_settings();
         $data['groups'] = $this->M_users->get_groups();
-        $data['title'] = 'Nominasi Management | Admin Panel';
-        $data['content'] = 'paneladmin/nominasi/list';
+        $data['title'] = 'Laporan Management | Admin Panel';
+        $data['content'] = 'paneladmin/laporan/list';
         $this->load->view('layouts/adminlte3', $data);
     }
 
     // 1. UPDATE di dalam method ajax_list()
     public function ajax_list()
     {
-        $list = $this->M_nominasi->get_datatables();
+        $list = $this->M_laporan->get_datatables();
         $data = array();
         $no = $_POST['start'];
 
         foreach ($list as $nominasi) {
             $status_label = '';
-            $nama_mhs = addslashes($nominasi->nama);
 
             $no++;
             $row = array();
@@ -56,47 +55,6 @@ class Nominasi extends CI_Controller
             }
             $row[] = $status_label;
 
-            // Action Button
-            // Di dalam Controller ajax_list
-
-            $pilihan_filter = $this->input->post('pilihan'); // Ini sudah benar, pastikan ditaruh sebelum loop
-            $prodi_filter   = $this->input->post('prodi');   // Ambil juga prodi filter
-            $kelas_filter = $this->input->post('kelas');
-
-            $prodi_target = ($pilihan_filter == 'pilihan_2') ? $nominasi->pilihan_2 : $nominasi->pilihan_1;
-            if (!empty($prodi_filter)) {
-                $prodi_target = $prodi_filter;
-            }
-
-            // Tentukan kelas target (Gunakan filter jika ada, jika tidak gunakan data mahasiswa)
-            $kelas_target = (!empty($kelas_filter)) ? $kelas_filter : (($pilihan_filter == 'pilihan_2') ? $nominasi->kelas_pilihan_2 : $nominasi->kelas_pilihan_1);
-
-            $nama_mhs = addslashes($nominasi->nama);
-
-            // Action Button di dalam loop foreach
-            $btn_action = '';
-
-            if ($nominasi->status == 1) {
-                // Jika sudah pernah ditentukan (status 1), munculkan tombol Reset
-                $btn_action = '
-                    <a class="btn btn-sm btn-warning" href="javascript:void(0)" 
-                    onclick="resetStatus(\'' . $nominasi->id . '\', \'' . $nama_mhs . '\')">
-                    <i class="fas fa-undo"></i> Reset</a>
-                ';
-            } else {
-                // Jika belum (status 0), munculkan tombol Utama & Cadangan
-                $btn_action = '
-                    <a class="btn btn-sm btn-success" href="javascript:void(0)" 
-                    onclick="prosesUbahStatus(\'' . $nominasi->id . '\', \'' . $pilihan_filter . '\', \'Utama\', \'' . $nama_mhs . '\', \'' . addslashes($prodi_target) . '\', \'' . addslashes($kelas_target) . '\')">
-                    <i class="fas fa-save"></i> Utama</a>
-                    
-                    <a class="btn btn-sm btn-danger" href="javascript:void(0)" 
-                    onclick="prosesUbahStatus(\'' . $nominasi->id . '\', \'' . $pilihan_filter . '\', \'Cadangan\', \'' . $nama_mhs . '\', \'' . addslashes($prodi_target) . '\', \'' . addslashes($kelas_target) . '\')">
-                    <i class="fas fa-save"></i> Cadangan</a>
-                ';
-            }
-            $row[] = $btn_action;
-
             $data[] = $row;
         }
         if (empty($this->input->post('prodi'))) {
@@ -110,8 +68,8 @@ class Nominasi extends CI_Controller
         } else {
             $output = array(
                 "draw" => $_POST['draw'],
-                "recordsTotal" => $this->M_nominasi->count_all(),
-                "recordsFiltered" => $this->M_nominasi->count_filtered(),
+                "recordsTotal" => $this->M_laporan->count_all(),
+                "recordsFiltered" => $this->M_laporan->count_filtered(),
                 "data" => $data,
                 "csrf_token" => $this->security->get_csrf_hash() // Penting untuk update token di view
             );
@@ -134,7 +92,7 @@ class Nominasi extends CI_Controller
         $pilihan = $split[0]; // Sekarang bernilai '2'
         $jenis   = $split[1]; // 'Utama'
 
-        $mhs = $this->M_nominasi->get_by_id($id);
+        $mhs = $this->M_laporan->get_by_id($id);
         $nama_prodi = ($pilihan == '1') ? $mhs->pilihan_1 : $mhs->pilihan_2;
         // CEK KUOTA LAGI SEBELUM DISIMPAN
         $kuota = $this->db->get_where('kuota_prodi', ['nama_prodi' => $nama_prodi])->row();
@@ -163,7 +121,7 @@ class Nominasi extends CI_Controller
             'status'           => 1
         );
 
-        $this->M_nominasi->update_status(array('id' => $id), $data_update);
+        $this->M_laporan->update_status(array('id' => $id), $data_update);
         echo json_encode(array("status" => TRUE));
     }
 
@@ -179,7 +137,7 @@ class Nominasi extends CI_Controller
             'kelas_diterima'   => NULL
         );
 
-        $this->M_nominasi->update_status(array('id' => $id), $data_reset);
+        $this->M_laporan->update_status(array('id' => $id), $data_reset);
         echo json_encode(array("status" => TRUE));
     }
 
@@ -222,7 +180,7 @@ class Nominasi extends CI_Controller
 
     public function ajax_view($id)
     {
-        $data = $this->M_nominasi->get_by_id($id);
+        $data = $this->M_laporan->get_by_id($id);
         echo json_encode($data);
     }
 
@@ -294,7 +252,7 @@ class Nominasi extends CI_Controller
                 fclose($file);
 
                 if (!empty($insert_data)) {
-                    $this->M_nominasi->insert_batch($insert_data);
+                    $this->M_laporan->insert_batch($insert_data);
                     $this->session->set_flashdata('success', 'Data Nominasi berhasil diimport!');
                 } else {
                     $this->session->set_flashdata('error', 'Gagal memproses. File kosong atau format baris tidak sesuai.');
@@ -311,16 +269,17 @@ class Nominasi extends CI_Controller
     public function export_excel_utama()
     {
 
-        $prodi   = $this->input->get('prodi');
-        $pilihan = $this->input->get('pilihan');
-        $kelas   = $this->input->get('kelas');
+        $prodi = $this->input->get('prodi');
+        $kelas = $this->input->get('kelas');
 
         $this->db->from('nominasi_camaba');
 
+        // Terapkan filter berdasarkan Prodi dan Kelas Diterima
+        $this->M_laporan->_apply_filter_excel($prodi, $kelas);
+
+        // Tambahkan kondisi 'Utama' sesuai kebutuhan Anda
         $this->db->where('jenis_kelulusan', 'Utama');
         $this->db->order_by('skor', 'DESC');
-
-        $this->M_nominasi->_apply_filter($prodi, $pilihan, $kelas);
 
         $nominasi_data = $this->db->get()->result();
 
@@ -371,16 +330,17 @@ class Nominasi extends CI_Controller
     public function export_excel_cadangan()
     {
 
-        $prodi   = $this->input->get('prodi');
-        $pilihan = $this->input->get('pilihan');
-        $kelas   = $this->input->get('kelas');
+        $prodi = $this->input->get('prodi');
+        $kelas = $this->input->get('kelas');
 
         $this->db->from('nominasi_camaba');
 
+        // Terapkan filter berdasarkan Prodi dan Kelas Diterima
+        $this->M_laporan->_apply_filter_excel($prodi, $kelas);
+
+        // Tambahkan kondisi 'Utama' sesuai kebutuhan Anda
         $this->db->where('jenis_kelulusan', 'Cadangan');
         $this->db->order_by('skor', 'DESC');
-
-        $this->M_nominasi->_apply_filter($prodi, $pilihan, $kelas);
 
         $nominasi_data = $this->db->get()->result();
 
@@ -390,7 +350,7 @@ class Nominasi extends CI_Controller
         $sheet = $spreadsheet->getActiveSheet();
 
 
-        $headers = ['ID', 'No. Ujian', 'Nama', 'No. Pendaftaran', 'Asal Sekolah', 'Jurusan Sekolah', 'Pilihan 1', 'Kelas Pilihan 1', 'Pilihan 2', 'Kelas Pilihan 2', 'Skor', 'Prodi Diterima', 'Jenis Kelulusan', 'Diunggah Pada'];
+        $headers = ['ID', 'No. Ujian', 'Nama', 'No. Pendaftaran', 'Asal Sekolah', 'Jurusan Sekolah', 'Pilihan 1', 'Kelas Pilihan 1', 'Pilihan 2', 'Kelas Pilihan 2', 'Skor', 'Prodi Diterima', 'Kelas Diterima', 'Jenis Kelulusan', 'Diunggah Pada'];
 
         $column = 'A';
         foreach ($headers as $h) {
@@ -405,7 +365,7 @@ class Nominasi extends CI_Controller
             $sheet->setCellValue('A' . $row, $no++);
             $sheet->setCellValue('B' . $row, $v->nomor_ujian);
             $sheet->setCellValue('C' . $row, $v->nama);
-            $sheet->setCellValue('D' . $row, $v->nomor_pendaftaran);
+            $sheet->setCellValue('D' . $row, "'" . $v->nomor_pendaftaran);
             $sheet->setCellValue('E' . $row, $v->asal_sekolah);
             $sheet->setCellValue('F' . $row, $v->jurusan_sekolah);
             $sheet->setCellValue('G' . $row, $v->pilihan_1);
@@ -414,8 +374,9 @@ class Nominasi extends CI_Controller
             $sheet->setCellValue('J' . $row, $v->kelas_pilihan_2);
             $sheet->setCellValue('K' . $row, $v->skor);
             $sheet->setCellValue('L' . $row, $v->prodi_diterima);
-            $sheet->setCellValue('M' . $row, $v->jenis_kelulusan);
-            $sheet->setCellValue('N' . $row, $v->diunggah_pada);
+            $sheet->setCellValue('M' . $row, $v->kelas_diterima);
+            $sheet->setCellValue('N' . $row, $v->jenis_kelulusan);
+            $sheet->setCellValue('O' . $row, $v->diunggah_pada);
             $row++;
         }
 
