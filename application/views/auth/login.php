@@ -252,11 +252,11 @@
           <i class="fas fa-sign-in-alt me-2"></i>Masuk
         </button>
 
-        <div class="text-center mt-3">
+        <!-- <div class="text-center mt-3">
           <a href="<?php echo site_url('auth/forgot_password'); ?>" class="forgot-password">
             <i class="fas fa-key me-1"></i>Lupa kata sandi?
           </a>
-        </div>
+        </div> -->
 
         <?php echo form_close(); ?>
       </div>

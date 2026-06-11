@@ -122,22 +122,13 @@ class M_nominasi extends CI_Model
             }
         }
         // KONDISI 3: tambahkan kondisi jika hanya filter prodi dan kelas saja 
-        if (!empty($prodi) && !empty($kelas)) {
-            $this->db->group_start(); // Memulai kurung buka untuk OR
-
-            // Logika untuk Pilihan 1
-            $this->db->group_start();
-            $this->db->where('pilihan_1', $prodi);
-            $this->db->where('kelas_pilihan_1', $kelas);
-            $this->db->group_end();
-
-            $this->db->or_group_start(); // Logika OR untuk Pilihan 2
-            $this->db->where('pilihan_2', $prodi);
-            $this->db->where('kelas_pilihan_2', $kelas);
-            $this->db->group_end();
-
-            $this->db->group_end(); // Menutup kurung tutup
-        } else {
+        SELECT * 
+FROM `nominasi_camaba` 
+WHERE 
+    (pilihan_1 = 'Program Studi D-III Kebidanan (Diploma III)' AND kelas_pilihan_1 = 'Reguler')
+    OR 
+    (pilihan_2 = 'Program Studi D-III Kebidanan (Diploma III)' AND kelas_pilihan_2 = 'Reguler');
+        else {
             // 
         }
     }

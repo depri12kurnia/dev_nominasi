@@ -58,25 +58,21 @@ class Nominasi extends CI_Controller
             $row[] = $nominasi->nomor_pendaftaran; // 3
             $row[] = $nominasi->asal_sekolah; // 4
             $row[] = $nominasi->jurusan_sekolah; // 5
-            $pilihan_text = '<p>';
+            $pilihan_text = '<p><small>';
 
             // Cek Pilihan 1: Jika cocok dengan prodi_target, bungkus dengan <strong>
             $p1 = $nominasi->pilihan_1;
-            $k1 = $nominasi->kelas_pilihan_1;
             if (!empty($prodi_target) && trim($p1) == trim($prodi_target)) {
                 $p1 = '<strong>' . $p1 . '</strong>';
-                $k1 = '<strong>' . $k1 . '</strong>';
             }
-            $pilihan_text .= '1. ' . $p1 . '-' . $k1 . '<br>';
+            $pilihan_text .= '1. ' . $p1 . '<br>';
 
             // Cek Pilihan 2: Jika cocok dengan prodi_target, bungkus dengan <strong>
             $p2 = $nominasi->pilihan_2;
-            $k2 = $nominasi->kelas_pilihan_2;
             if (!empty($prodi_target) && trim($p2) == trim($prodi_target)) {
                 $p2 = '<strong>' . $p2 . '</strong>';
-                $k2 = '<strong>' . $k2 . '</strong>';
             }
-            $pilihan_text .= '2. ' . $p2 . '-' . $k2 . '</p>';
+            $pilihan_text .= '2. ' . $p2 . '</small></p>';
 
             // Masukkan ke array row
             $row[] = $pilihan_text; // 6
@@ -84,14 +80,10 @@ class Nominasi extends CI_Controller
 
             // Logika Status Kelulusan
             if (!empty($nominasi->jenis_kelulusan)) {
-                $warna_bg = ($nominasi->jenis_kelulusan == 'Utama') ? 'bg-success' : 'bg-warning';
-
-                $status_label = '<div class="' . $warna_bg . ' text-white" style="padding: 10px; border-radius: 5px;">
-                        <strong>Lulus Pilihan ' . $nominasi->pilihan_diterima . ' (' . $nominasi->jenis_kelulusan . ') ' . $nominasi->kelas_diterima . '<br>
-                        Prodi : ' . $nominasi->prodi_diterima . '
-                     </strong></div>';
+                $warna = ($nominasi->jenis_kelulusan == 'Utama') ? 'badge-success' : 'badge-warning';
+                $status_label = '<span class="badge ' . $warna . '">Lulus Pilihan. ' . $nominasi->pilihan_diterima . ' (' . $nominasi->jenis_kelulusan . ') ' . $nominasi->kelas_diterima . '<br><br>Prodi:' . $nominasi->prodi_diterima . '</span>';
             } else {
-                $status_label = '<div class="bg-secondary text-white" style="padding: 10px; border-radius: 5px;">Belum Ditentukan</div>';
+                $status_label = '<span class="badge badge-secondary">Belum Ditentukan</span>';
             }
             $row[] = $status_label;
 
@@ -105,18 +97,18 @@ class Nominasi extends CI_Controller
                 $btn_action = '
                     <a class="btn btn-sm btn-warning" href="javascript:void(0)" 
                     onclick="resetStatus(\'' . $nominasi->id . '\', \'' . $nama_mhs . '\')">
-                    <i class="fas fa-undo"></i>  Reset</a>
+                    <i class="fas fa-undo"></i> Reset</a>
                 ';
             } else {
                 // Jika belum (status 0), munculkan tombol Utama & Cadangan
                 $btn_action = '
-                    <a class="btn btn-success" href="javascript:void(0)" title="Status Utama" 
+                    <a class="btn btn-sm btn-success" href="javascript:void(0)" 
                     onclick="prosesUbahStatus(\'' . $nominasi->id . '\', \'' . $pilihan_filter . '\', \'Utama\', \'' . $nama_mhs . '\', \'' . addslashes($prodi_target) . '\', \'' . addslashes($kelas_target) . '\')">
-                    <i class="fas fa-save"></i>  Utama</a>
+                    <i class="fas fa-save"></i> Utama</a>
                     
-                    <a class="btn btn-danger" href="javascript:void(0)" title="Status Cadangan" 
+                    <a class="btn btn-sm btn-danger" href="javascript:void(0)" 
                     onclick="prosesUbahStatus(\'' . $nominasi->id . '\', \'' . $pilihan_filter . '\', \'Cadangan\', \'' . $nama_mhs . '\', \'' . addslashes($prodi_target) . '\', \'' . addslashes($kelas_target) . '\')">
-                    <i class="fas fa-save"></i>  Cadangan</a>
+                    <i class="fas fa-save"></i> Cadangan</a>
                 ';
             }
             $row[] = $btn_action;
@@ -128,7 +120,7 @@ class Nominasi extends CI_Controller
                 "draw" => $_POST['draw'],
                 "recordsTotal" => 0,
                 "recordsFiltered" => 0,
-                "data" => []
+                "data" => [] // KOSONGKAN DI SINI
             ]);
             return;
         } else {
@@ -151,9 +143,12 @@ class Nominasi extends CI_Controller
         $prodi_manual = $this->input->post('prodi_manual');
         $kelas_manual = $this->input->post('kelas');
 
+        // echo json_encode(["debug" => $status_raw]);
+        // exit;
+
         $split = explode('_', $status_raw);
-        $pilihan = $split[0];
-        $jenis   = $split[1];
+        $pilihan = $split[0]; // Sekarang bernilai '2'
+        $jenis   = $split[1]; // 'Utama'
 
         $mhs = $this->M_nominasi->get_by_id($id);
         $nama_prodi = ($pilihan == '1') ? $mhs->pilihan_1 : $mhs->pilihan_2;
@@ -185,10 +180,6 @@ class Nominasi extends CI_Controller
         );
 
         $this->M_nominasi->update_status(array('id' => $id), $data_update);
-        // Mendapatkan user yang login
-        $user = $this->ion_auth->user()->row();
-        // Menyimpan log aktivitas login
-        $this->M_log_user->save_log($user->id, 'Update Status Kelulusan');
         echo json_encode(array("status" => TRUE));
     }
 
@@ -205,10 +196,6 @@ class Nominasi extends CI_Controller
         );
 
         $this->M_nominasi->update_status(array('id' => $id), $data_reset);
-        // Mendapatkan user yang login
-        $user = $this->ion_auth->user()->row();
-        // Menyimpan log aktivitas login
-        $this->M_log_user->save_log($user->id, 'Reset Status Kelulusan');
         echo json_encode(array("status" => TRUE));
     }
 

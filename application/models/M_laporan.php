@@ -21,7 +21,7 @@ class M_laporan extends CI_Model
         $this->db->from($this->table);
 
         // Panggil Method Filter
-        $this->_apply_filter();
+        $this->_apply_filter_excel();
 
         // (Kode pencarian bawaan datatables Anda biarkan di bawah sini)
         $i = 0;
@@ -69,25 +69,6 @@ class M_laporan extends CI_Model
         return $this->db->count_all_results();
     }
 
-    public function get_by_id($id)
-    {
-        $this->db->from($this->table);
-        $this->db->where('id', $id);
-        $query = $this->db->get();
-        return $query->row();
-    }
-
-    public function insert_batch($data)
-    {
-        return $this->db->insert_batch($this->table, $data);
-    }
-
-    public function update_status($where, $data)
-    {
-        $this->db->update($this->table, $data, $where);
-        return $this->db->affected_rows();
-    }
-
     public function get_all_data()
     {
         $this->db->from($this->table);
@@ -96,50 +77,17 @@ class M_laporan extends CI_Model
         return $this->db->get()->result();
     }
 
-    public function _apply_filter()
+    public function _apply_filter_excel($prodi = null, $kelas = null, $jenis = null)
     {
-        // Tangkap data dan bersihkan dari spasi berlebih menggunakan trim()
-        $prodi   = trim($this->input->post('prodi') ? $this->input->post('prodi') : $this->input->get('prodi'));
-        $pilihan = trim($this->input->post('pilihan') ? $this->input->post('pilihan') : $this->input->get('pilihan'));
-        $kelas   = trim($this->input->post('kelas') ? $this->input->post('kelas') : $this->input->get('kelas'));
-
-        // KONDISI 1: Tangkap variasi value Pilihan 1
-        if ($pilihan == '1' || $pilihan == 'pilihan_1' || $pilihan == 'kelas_pilihan_1') {
-            if (!empty($prodi)) {
-                $this->db->where('pilihan_1', $prodi);
-            }
-            if (!empty($kelas)) {
-                $this->db->where('kelas_pilihan_1', $kelas);
-            }
-        }
-        // KONDISI 2: Tangkap variasi value Pilihan 2
-        else if ($pilihan == '2' || $pilihan == 'pilihan_2' || $pilihan == 'kelas_pilihan_2') {
-            if (!empty($prodi)) {
-                $this->db->where('pilihan_2', $prodi);
-            }
-            if (!empty($kelas)) {
-                $this->db->where('kelas_pilihan_2', $kelas);
-            }
-        }
-        // KONDISI 3: Semua Pilihan (Kosong)
-        else {
-            // 
-        }
-    }
-
-    public function _apply_filter_excel($prodi, $kelas)
-    {
-        // Bersihkan parameter
-        $prodi = trim($prodi);
-        $kelas = trim($kelas);
-
-        // KONDISI: Jika prodi dan kelas DITERIMA ada, terapkan filter sesuai contoh Anda
+        /// Bersihkan parameter sebelum digunakan
         if (!empty($prodi)) {
-            $this->db->where('prodi_diterima', $prodi);
+            $this->db->where('prodi_diterima', trim($prodi));
         }
-
         if (!empty($kelas)) {
-            $this->db->where('kelas_diterima', $kelas);
+            $this->db->where('kelas_diterima', trim($kelas));
+        }
+        if (!empty($jenis)) {
+            $this->db->where('jenis_kelulusan', trim($jenis));
         }
     }
 }

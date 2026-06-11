@@ -10,9 +10,9 @@
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <label for="filter_prodi">Prodi:</label>
-                        <select id="filter_prodi" class="form-control form-control-sm">
+                        <select id="filter_prodi" class="form-control form-control">
                             <option value="">Semua Prodi</option>
                             <option value="Program Studi D-III Kebidanan (Diploma III)">Program Studi D-III Kebidanan (Diploma III)</option>
                             <option value="Program Studi D-III Keperawatan (Diploma III)">Program Studi D-III Keperawatan (Diploma III)</option>
@@ -24,28 +24,29 @@
                             <option value="Program Studi Sarjana Terapan TLM (Diploma IV)">Program Studi Sarjana Terapan TLM (Diploma IV)</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label for="filter_kelas">Pilihan :</label>
-                        <select id="filter_kelas" class="form-control form-control-sm">
+                    <div class="col-md-2">
+                        <label for="filter_kelas">Kelas :</label>
+                        <select id="filter_kelas" class="form-control form-control">
                             <option value="">Semua Kelas</option>
                             <option value="Reguler">Reguler</option>
                             <option value="Internasional">Internasional</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="filter_pilihan">Pilihan :</label>
-                        <select id="filter_pilihan" class="form-control form-control-sm">
+                        <select id="filter_pilihan" class="form-control form-control">
                             <option value="">Semua Pilihan</option>
                             <option value="1"> 1</option>
                             <option value="2"> 2</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 text-right">
                         <label>&nbsp;</label><br>
-                        <button type="button" id="btn_filter" class="btn btn-primary btn-sm">Filter</button>
-                        <button type="button" id="btn_reset" class="btn btn-secondary btn-sm">Reset</button>
+                        <button type="button" id="btn_filter" class="btn btn-primary"><i class="fas fa-filter"></i> Filter</button>
+                        <button type="button" id="btn_reset" class="btn btn-secondary"><i class="fas fa-redo"></i> Reset</button>
                     </div>
                 </div>
+
                 <div class="row mb-4" id="panel_kuota">
                     <div class="col-md-12">
                         <div class="info-box bg-light border border-info">
@@ -54,9 +55,9 @@
                                 <span class="info-box-text text-bold text-info" id="nama_prodi_kuota">Nama Prodi</span>
                                 <span class="info-box-text text-bold text-info" id="kelas">Kelas</span>
                                 <span class="info-box-number mt-1">
-                                    <span class="badge badge-success text-sm py-1 px-2">UTAMA: <span id="lbl_terisi_utama">0</span> / <span id="lbl_kuota_utama">0</span> Terisi</span>
+                                    <span class="badge badge-success text-sm py-1 px-2">UTAMA: <span id="lbl_terisi_utama">0</span> / <span id="lbl_kuota_utama">0</span></span>
                                     &nbsp;&nbsp;
-                                    <span class="badge badge-warning text-sm py-1 px-2">CADANGAN: <span id="lbl_terisi_cadangan">0</span> / <span id="lbl_kuota_cadangan">0</span> Terisi</span>
+                                    <span class="badge badge-warning text-sm py-1 px-2">CADANGAN: <span id="lbl_terisi_cadangan">0</span> / <span id="lbl_kuota_cadangan">0</span> </span>
                                 </span>
                             </div>
                         </div>
@@ -68,14 +69,11 @@
                         <button type="button" id="btn_import_excel" class="btn btn-primary btn-sm">
                             <i class="fas fa-file-excel"></i> Import dari Excel
                         </button>
-                        <button type="button" id="btn_export_excel_utama" class="btn btn-success btn-sm">
-                            <i class="fas fa-file-excel"></i> Export Utama
-                        </button>
-                        <button type="button" id="btn_export_excel_cadangan" class="btn btn-danger btn-sm">
-                            <i class="fas fa-file-excel"></i> Export Cadangan
-                        </button>
                         <button type="button" id="btn_refresh" class="btn btn-secondary btn-sm">
                             <i class="fas fa-sync"></i> Refresh Data
+                        </button>
+                        <button type="button" id="btn_refresh" class="btn btn-info btn-sm">
+                            <i class="fas fa-download"></i> Template Import
                         </button>
                     </div>
                 </div>
@@ -91,6 +89,7 @@
                                 <th>No. Pendaftaran</th>
                                 <th>Asal Sekolah</th>
                                 <th>Jurusan Sekolah</th>
+                                <th>Pilihan</th>
                                 <th>Skor</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -150,15 +149,15 @@
     function prosesUbahStatus(id, pilihanFilter, jenis, nama, prodi, kelasFilter) {
         // 1. Perbaikan: Gunakan parameter yang dikirim (kelasFilter), 
         // jangan gunakan variabel 'kelas' sebelum didefinisikan.
-        console.log("Diterima - ID: " + id + ", Nama: " + nama + ", Prodi: " + prodi + ", Kelas: " + kelasFilter);
-        console.log("Filter yang diterima:", pilihanFilter);
+        // console.log("Diterima - ID: " + id + ", Nama: " + nama + ", Prodi: " + prodi + ", Kelas: " + kelasFilter);
+        // console.log("Filter yang diterima:", pilihanFilter);
 
         // 2. Sekarang definisikan variabel 'kelas' berdasarkan input
         let pilihan = (pilihanFilter === '2') ? '2' : '1';
         let kelas = (kelasFilter === 'Internasional') ? 'Internasional' : 'Reguler';
 
         let statusValue = pilihan + '_' + jenis;
-        console.log("Status yang dikirim ke server:", statusValue);
+        // console.log("Status yang dikirim ke server:", statusValue);
 
         Swal.fire({
             title: 'Konfirmasi',
@@ -179,7 +178,7 @@
                         prodi_manual: prodi,
                         nama: nama,
                         pilihan: pilihan,
-                        kelas: kelas, // Mengirim kelas yang sudah diproses
+                        kelas: kelas,
                         "<?= $this->security->get_csrf_token_name(); ?>": getCsrfToken()
                     },
                     success: function(res) {
@@ -192,15 +191,14 @@
                                 confirmButtonText: 'Mengerti'
                             });
                         } else {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: 'Status telah disimpan.',
-                                timer: 1500
-                            });
+                            // Swal.fire({
+                            //     icon: 'success',
+                            //     title: 'Berhasil!',
+                            //     text: 'Status telah disimpan.',
+                            //     timer: 1500
+                            // });
 
                             table.ajax.reload(function() {
-                                // Kode ini baru dijalankan setelah tabel benar-benar selesai di-reload
                                 updateData();
                             }, false);
                         }
@@ -218,10 +216,12 @@
                 "responsive": false,
                 "autoWidth": false,
                 "pageLength": 10,
+                "ordering": false,
                 "deferLoading": 0,
                 "order": [
                     [6, "DESC"]
                 ],
+
                 "ajax": {
                     "url": "<?= site_url('admin/nominasi/ajax_list') ?>",
                     "type": "POST",
@@ -230,7 +230,6 @@
                     },
                     "data": function(d) {
                         d[csrfName] = getCsrfToken();
-                        // MENGIRIM DATA FILTER KE SERVER
                         d.prodi = $('#filter_prodi').val();
                         d.pilihan = $('#filter_pilihan').val();
                         d.kelas = $('#filter_kelas').val();
@@ -240,13 +239,11 @@
                             $('#csrf_token').val(json.csrf_token);
                         }
                         return json.data;
-                    },
-                    "error": function(xhr, error, thrown) {
-                        console.log('DataTable AJAX Error:', error, xhr.responseText);
                     }
                 }
             });
         }
+
         // Action Tombol FILTER
         $('#btn_filter').click(function() {
             updateData();
@@ -272,7 +269,7 @@
 
                         // Render Teks
                         $('#nama_prodi_kuota').text(prodi);
-                        $('#kelas').text(kelas);
+                        $('#kelas_kuota').text(kelas);
                         $('#lbl_kuota_utama').text(res.kuota_utama);
                         $('#lbl_kuota_cadangan').text(res.kuota_cadangan);
                         $('#lbl_terisi_utama').text(res.terisi_utama);
@@ -286,9 +283,9 @@
                         }
 
                         if (parseInt(res.kuota_cadangan) >= parseInt(res.kuota_cadangan) && parseInt(res.kuota_cadangan) > 0) {
-                            $('#lbl_terisi_cadangan').parent().removeClass('badge-warning').addClass('badge-danger');
-                        } else {
                             $('#lbl_terisi_cadangan').parent().removeClass('badge-danger').addClass('badge-warning');
+                        } else {
+                            $('#lbl_terisi_cadangan').parent().removeClass('badge-warning').addClass('badge-danger');
                         }
                         // Tampilkan panel
                         $('#panel_kuota').slideDown();
@@ -309,7 +306,7 @@
 
             // 2. Reset teks ke 0 / 0
             $('#nama_prodi_kuota').text('Nama Prodi');
-            $('#kelas').text('Kelas');
+            $('#kelas_kuota').text('Kelas');
             $('#lbl_kuota_utama').text('0');
             $('#lbl_kuota_cadangan').text('0');
             $('#lbl_terisi_utama').text('0');
