@@ -135,6 +135,100 @@
     </div>
 </div>
 
+<!-- Modal Ubah Pilihan dan Kelas -->
+<div class="modal fade" id="modal_form" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Ubah Pilihan/Kelas Form</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+
+            </div>
+            <div class="modal-body form">
+                <form action="#" id="form" class="form-horizontal">
+                    <input type="hidden" value="" name="id" />
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Nomor Ujian</label>
+                            <div class="col-md-12">
+                                <input name="nomor_ujian" class="form-control" type="text" readonly>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Nama</label>
+                            <div class="col-md-12">
+                                <input name="nama" class="form-control" type="text" readonly>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Nomor Pendaftaran</label>
+                            <div class="col-md-12">
+                                <input name="nomor_pendaftaran" class="form-control" type="text" readonly>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Pilihan 1</label>
+                            <select name="pilihan_1" class="form-control form-control-sm">
+                                <option value="">Pilih Prodi</option>
+                                <option value="Program Studi D-III Kebidanan (Diploma III)">Program Studi D-III Kebidanan (Diploma III)</option>
+                                <option value="Program Studi D-III Keperawatan (Diploma III)">Program Studi D-III Keperawatan (Diploma III)</option>
+                                <option value="Program Studi D-III Teknologi Laboratorium Medis (Diploma III)">Program Studi D-III Teknologi Laboratorium Medis (Diploma III)</option>
+                                <option value="Program Studi Sarjana Terapan Kebidanan (Diploma IV)">Program Studi Sarjana Terapan Kebidanan (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan Keperawatan (Diploma IV)">Program Studi Sarjana Terapan Keperawatan (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan Promosi Kesehatan (Diploma IV)">Program Studi Sarjana Terapan Promosi Kesehatan (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan Fisioterapi (Diploma IV)">Program Studi Sarjana Terapan Fisioterapi (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan TLM (Diploma IV)">Program Studi Sarjana Terapan TLM (Diploma IV)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Kelas Pilihan 1</label>
+                            <div class="col-md-12">
+                                <select name="kelas_pilihan_1" class="form-control form-control-sm">
+                                    <option value="">Pilih Kelas</option>
+                                    <option value="Reguler"> Reguler</option>
+                                    <option value="Internasional"> Internasional</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Pilihan 2</label>
+                            <select name="pilihan_2" class="form-control form-control-sm">
+                                <option value="">Pilih Prodi</option>
+                                <option value="Program Studi D-III Kebidanan (Diploma III)">Program Studi D-III Kebidanan (Diploma III)</option>
+                                <option value="Program Studi D-III Keperawatan (Diploma III)">Program Studi D-III Keperawatan (Diploma III)</option>
+                                <option value="Program Studi D-III Teknologi Laboratorium Medis (Diploma III)">Program Studi D-III Teknologi Laboratorium Medis (Diploma III)</option>
+                                <option value="Program Studi Sarjana Terapan Kebidanan (Diploma IV)">Program Studi Sarjana Terapan Kebidanan (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan Keperawatan (Diploma IV)">Program Studi Sarjana Terapan Keperawatan (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan Promosi Kesehatan (Diploma IV)">Program Studi Sarjana Terapan Promosi Kesehatan (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan Fisioterapi (Diploma IV)">Program Studi Sarjana Terapan Fisioterapi (Diploma IV)</option>
+                                <option value="Program Studi Sarjana Terapan TLM (Diploma IV)">Program Studi Sarjana Terapan TLM (Diploma IV)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12">Kelas Pilihan 2</label>
+                            <div class="col-md-12">
+                                <select name="kelas_pilihan_2" class="form-control form-control-sm">
+                                    <option value="">Pilih Kelas</option>
+                                    <option value="Reguler"> Reguler</option>
+                                    <option value="Internasional"> Internasional</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <input type="hidden" id="csrf_token" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
 <script>
@@ -376,6 +470,7 @@
                 $(this).next('.custom-file-label').removeClass("selected").html('Pilih file CSV');
             }
         });
+
     });
 
     function resetStatus(id, nama) {
@@ -414,4 +509,74 @@
             }
         });
     }
+
+    function edit_nominasi(id) {
+        save_method = 'update';
+        $('#form')[0].reset();
+        $('.form-group').removeClass('has-error');
+        $('.help-block').empty();
+        $.ajax({
+            url: "<?php echo site_url('admin/nominasi/ajax_edit/') ?>" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(data) {
+                $('[name="id"]').val(data.id);
+                $('[name="nomor_ujian"]').val(data.nomor_ujian);
+                $('[name="nama"]').val(data.nama);
+                $('[name="nomor_pendaftaran"]').val(data.nomor_pendaftaran);
+                $('[name="pilihan_1"]').val(data.pilihan_1);
+                $('[name="kelas_pilihan_1"]').val(data.kelas_pilihan_1);
+                $('[name="pilihan_2"]').val(data.pilihan_2);
+                $('[name="kelas_pilihan_2"]').val(data.kelas_pilihan_2);
+                $('#modal_form').modal('show');
+                $('.modal-title').text('Edit Kelas Nominasi');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error getting data from ajax');
+            }
+        });
+    }
+
+    $('#btnSave').click(function() {
+
+        var url = "<?php echo site_url('admin/nominasi/ajax_update') ?>";
+
+        var formData = $('#form').serialize();
+        formData += '&csrf_token_jkt3=' + getCsrfToken(); // Tambahkan CSRF token ke form data
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: $('#form').serialize() + '&csrf_token_jkt3=' + getCsrfToken(),
+            dataType: "JSON",
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRF-Token", getCsrfToken());
+            },
+            success: function(data) {
+                if (data.status) {
+                    $('#modal_form').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Ubah Data telah disimpan.',
+                        timer: 1500
+                    });
+                    table.ajax.reload(null, false);
+                } else {
+                    for (var i = 0; i < data.inputerror.length; i++) {
+                        $('[name="' + data.inputerror[i] + '"]').parent().parent().addClass('has-error');
+                        $('[name="' + data.inputerror[i] + '"]').next().text(data.error_string[i]);
+                    }
+                }
+
+                // Debug
+                // console.log("Token CSRF baru:", data.csrf_token);
+                // Perbarui CSRF token setelah request berhasil
+                document.cookie = "csrf_cookie_jkt3=" + data.csrf_token + "; path=/";
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error adding / update data');
+            }
+        });
+    });
 </script>

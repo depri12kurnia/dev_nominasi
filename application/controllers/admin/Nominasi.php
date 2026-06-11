@@ -117,6 +117,8 @@ class Nominasi extends CI_Controller
                     <a class="btn btn-danger" href="javascript:void(0)" title="Status Cadangan" 
                     onclick="prosesUbahStatus(\'' . $nominasi->id . '\', \'' . $pilihan_filter . '\', \'Cadangan\', \'' . $nama_mhs . '\', \'' . addslashes($prodi_target) . '\', \'' . addslashes($kelas_target) . '\')">
                     <i class="fas fa-save"></i>  Cadangan</a>
+
+                    <a class="btn btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_nominasi(' . "'" . $nominasi->id . "'" . ')"><i class="fa fa-edit"></i> Edit</a>
                 ';
             }
             $row[] = $btn_action;
@@ -258,6 +260,42 @@ class Nominasi extends CI_Controller
     public function ajax_detail($id)
     {
         $this->ajax_view($id);
+    }
+
+    public function ajax_edit($id)
+    {
+        $data = $this->M_nominasi->get_by_id($id);
+        echo json_encode($data);
+    }
+
+    public function ajax_update()
+    {
+        $this->validate_csrf();
+        $this->_validate();
+
+        $data = array(
+            'nomor_ujian'       => $this->input->post('nomor_ujian'),
+            'nama'              => $this->input->post('nama'),
+            'nomor_pendaftaran' => $this->input->post('nomor_pendaftaran'),
+            'jurusan_sekolah'   => $this->input->post('jurusan_sekolah'),
+            'pilihan_1'         => $this->input->post('pilihan_1'),
+            'kelas_pilihan_1'   => $this->input->post('kelas_pilihan_1'),
+            'pilihan_2'         => $this->input->post('pilihan_2'),
+            'kelas_pilihan_2'   => $this->input->post('kelas_pilihan_2'),
+        );
+
+        $this->M_nominasi->update_nominasi($this->input->post('id'), $data);
+
+        // Mendapatkan user yang login
+        $user = $this->ion_auth->user()->row();
+        $nama_peserta = $this->input->post('nama');
+        // Menyimpan log aktivitas login
+        $this->M_log_user->save_log($user->id, 'Update Data Nominasi ' . $nama_peserta);
+
+        echo json_encode([
+            "status" => TRUE,
+            "csrf_token" => $this->security->get_csrf_hash() // Kirim token CSRF baru
+        ]);
     }
 
     public function import_excel()
@@ -484,6 +522,48 @@ class Nominasi extends CI_Controller
                 "received_csrf" => $csrf,
                 "expected_csrf" => substr($valid, 0, 8) . '...'
             ]);
+            exit();
+        }
+    }
+
+    private function _validate()
+    {
+        $data = array();
+        $data['error_string'] = array();
+        $data['inputerror'] = array();
+        $data['status'] = TRUE;
+
+        $pilihan_1     = $this->input->post('pilihan_1');
+        $kelas_pilihan_1     = $this->input->post('kelas_pilihan_1');
+        $pilihan_2    = $this->input->post('pilihan_2');
+        $kelas_pilihan_2 = $this->input->post('kelas_pilihan_2');
+
+        if (empty($pilihan_1)) {
+            $data['inputerror'][] = 'pilihan_1';
+            $data['error_string'][] = 'Pilihan 1 prodi wajib dipilih';
+            $data['status'] = FALSE;
+        }
+
+        if (empty($kelas_pilihan_1)) {
+            $data['inputerror'][] = 'kelas_pilihan_1';
+            $data['error_string'][] = 'Kelas Pilihan 1 wajib dipilih';
+            $data['status'] = FALSE;
+        }
+
+        if (empty($pilihan_2)) {
+            $data['inputerror'][] = 'pilihan_2';
+            $data['error_string'][] = 'Pilihan 2 wajib dipilih';
+            $data['status'] = FALSE;
+        }
+
+        if (empty($kelas_pilihan_2)) {
+            $data['inputerror'][] = 'kelas_pilihan_2';
+            $data['error_string'][] = 'Kelas Pilihan 2 wajib dipilih';
+            $data['status'] = FALSE;
+        }
+
+        if ($data['status'] === FALSE) {
+            echo json_encode($data);
             exit();
         }
     }

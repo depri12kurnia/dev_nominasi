@@ -88,6 +88,12 @@ class M_nominasi extends CI_Model
         return $this->db->affected_rows();
     }
 
+    public function update_nominasi($id, $data)
+    {
+        $this->db->where('id', $id);
+        return $this->db->update($this->table, $data);
+    }
+
     public function get_all_data()
     {
         $this->db->from($this->table);
