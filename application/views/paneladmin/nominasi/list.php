@@ -72,9 +72,9 @@
                         <button type="button" id="btn_refresh" class="btn btn-secondary btn-sm">
                             <i class="fas fa-sync"></i> Refresh Data
                         </button>
-                        <button type="button" id="btn_refresh" class="btn btn-info btn-sm">
+                        <a href="<?= base_url('public/settings/temp/template_untuk_import_data_nominasi.csv'); ?>" target="_blank" class="btn btn-info btn-sm">
                             <i class="fas fa-download"></i> Template Import
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <!-- End Header & Export Action -->
